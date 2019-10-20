@@ -2,7 +2,7 @@
 // ***** SEGMENT CLASS *****
 // This class will be used to represent each part of the moving snake.
 //*
-
+import java.lang.Math;
 class Segment {
 
 //Add x and y member variables. They will hold the corner location of each segment of the snake.
@@ -25,7 +25,7 @@ public Segment(int xsnake, int ysnake){
 int foodX;
 int foodY;
 Segment head;
-
+ArrayList<Segment> tail = new ArrayList<Segment>();
 int x;
 int y;
 
@@ -59,7 +59,6 @@ void dropFood() {
 
 void draw() {
   background(0,0,0);
-  fill(200,0,0);
   drawFood();
   fill(0,200,0);
   move();
@@ -70,16 +69,26 @@ void draw() {
 
 void drawFood() {
   //Draw the food
+  int foodeaten = eaten;
+  if(foodeaten==0){
+  fill(200,0,0);
   rect(foodX,foodY,10,10);
+  }
+  
+  if(foodeaten==1){
+    fill(0,0,0);
+    eaten--;
+    dropFood();
+    fill(200,0,0);
+    rect(foodX,foodY,10,10);
+  }
 }
 
 void drawSnake() {
   //Draw the head of the snake followed by its tail
   checkBoundaries();
   rect(x,y,10,10);
-  
- 
-
+  manageTail();
 }
 
 
@@ -90,18 +99,35 @@ void drawSnake() {
 
 void drawTail() {
   //Draw each segment of the tail 
-
+  int x2=0;
+  int y2=0;
+  int tailsize = tail.size();
+  if(tailsize>0){
+  x2=x+10;
+  y2=y;
+  rect(x2,y2,10,10);
+  tailsize--;
+  }
 }
 
 void manageTail() {
   //After drawing the tail, add a new segment at the "start" of the tail and remove the one at the "end" 
   //This produces the illusion of the snake tail moving.
-  
+  checkTailCollision();
+  drawTail();
+  tail.add(new Segment(x,y));
+  tail.remove(0);  
 }
 
 void checkTailCollision() {
   //If the snake crosses its own tail, shrink the tail back to one segment
-  
+  for(int i=1;i<tail.size();i++){
+    if(tail.get(0).x==tail.get(i).x&&tail.get(0).y==tail.get(i).y){
+      eaten=1;
+      tail = new ArrayList<Segment>();
+      tail.add(new Segment(x,y));
+    }
+  }
 }
 
 
@@ -130,19 +156,19 @@ void move() {
   //Change the location of the Snake head based on the direction it is moving.   
   switch(direction) {
   case UP:
-  y = y-1;
+  y = y-3;
     // move head up here 
     break;
   case DOWN:
-  y = y+1;  
+  y = y+3;  
     // move head down here 
     break;
   case LEFT:
-  x = x-1;
+  x = x-3;
    // figure it out 
     break;
   case RIGHT:
-  x = x+1;
+  x = x+3;
     // mystery code goes here 
     break;
   }
@@ -168,8 +194,11 @@ void checkBoundaries() {
 
 void eat() {
   //When the snake eats the food, its tail should grow and more food appear
-  if(foodX==x&&foodY==y){
-  eaten++;
-  drawFood();
+  if(abs(foodX-x)<2&&abs(foodY-y)<2){
+    eaten++;
+    drawFood();
+    System.out.println(eaten);
+    tail.add(new Segment(x,y));
   }
+  
 }
