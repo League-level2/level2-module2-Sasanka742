@@ -6,34 +6,32 @@ import java.lang.Math;
 class Segment {
 
 //Add x and y member variables. They will hold the corner location of each segment of the snake.
-int x;
-int y;
+ int x;
+ int y;
 
 // Add a constructor with parameters to initialize each variable.
 public Segment(int xsnake, int ysnake){
  x = xsnake;
  y = ysnake;
 }
-
 }
-
 
 //*
 // ***** GAME VARIABLES *****
 // All the game variables that will be shared by the game methods are here
 //*
+Segment head;
+
 int foodX;
 int foodY;
 
-Segment head;
-
 ArrayList<Segment> tail = new ArrayList<Segment>();
-int x;
-int y;
 
 int direction = UP;
 int eaten = 0;
 
+int x1;
+int y1;
 //*
 // ***** SETUP METHODS *****
 // These methods are called at the start of the game.
@@ -41,7 +39,7 @@ int eaten = 0;
 
 void setup() {
   size(500,500);
-  head = new Segment(x,y);
+  head = new Segment(x1,y1);
   frameRate(20);
   dropFood();
 }
@@ -79,7 +77,7 @@ void drawFood() {
 void drawSnake() {
   //Draw the head of the snake followed by its tail
   checkBoundaries();
-  rect(x,y,10,10);
+  rect(x1,y1,10,10);
   manageTail();
 }
 
@@ -91,8 +89,9 @@ void drawSnake() {
 
 void drawTail() {
   //Draw each segment of the tail 
+  
   for(int i=0;i<tail.size();i++){
-  rect(x,y,10,10);
+  rect(x1,y1,10,10);
   }
 }
 
@@ -143,21 +142,23 @@ void move() {
   //Change the location of the Snake head based on the direction it is moving.   
   switch(direction) {
   case UP:
-  y = y-2;
+  y1 = y1-2;
+  
     // move head up here 
     break;
   case DOWN:
-  y = y+2;  
-
+  y1 = y1+2;  
+  
     // move head down here 
     break;
   case LEFT:
-  x = x-2;
+  x1 = x1-2;
+
    // figure it out 
     break;
   case RIGHT:
-  x = x+2;
-
+  x1 = x1+2;
+  
     // mystery code goes here 
     break;
   }
@@ -166,15 +167,15 @@ void move() {
 
 void checkBoundaries() {
  //If the snake leaves the frame, make it reappear on the other side
- if(x<0){
-   x = 500;
- }else if(x>500){
-   x = 0; 
+ if(x1<0){
+   x1 = 500;
+ }else if(x1>500){
+   x1 = 0; 
  }
- if(y<0){
-   y=500;
- }else if(y>500){
-   y=0;
+ if(y1<0){
+   y1=500;
+ }else if(y1>500){
+   y1=0;
  }
 }
 
@@ -183,12 +184,12 @@ void checkBoundaries() {
 
 void eat() {
   //When the snake eats the food, its tail should grow and more food appear
-  if(abs(foodX-x)<2&&abs(foodY-y)<2){
+  if(abs(foodX-x1)<2&&abs(foodY-y1)<2){
     eaten++;
     dropFood();
     drawFood();
-    tail.add(new Segment(head.x,head.y));
+    
+    tail.add(new Segment(x1,y1));
     System.out.println(eaten);
   }
-
 }
