@@ -24,7 +24,8 @@ Segment head;
 
 int foodX;
 int foodY;
-
+int width = 10;
+int length = 10;
 ArrayList<Segment> tail = new ArrayList<Segment>();
 
 int direction = UP;
@@ -74,7 +75,7 @@ void drawFood() {
 
 void drawSnake() {
   //Draw the head of the snake followed by its tail
-  rect(head.x,head.y,10,10);
+  rect(head.x,head.y,width,length);
     
   manageTail();
  
@@ -91,7 +92,7 @@ void drawTail() {
   
   for(Segment s : tail){  
   fill(0,200,0);
-  rect(s.x,s.y,10,10);
+  rect(s.x,s.y,width,length);
   }
 }
 
@@ -111,7 +112,7 @@ void checkTailCollision() {
     if(head.x==s.x&&head.y==s.y){
       eaten=1;
       tail = new ArrayList<Segment>();
-      tail.add(new Segment(head.x,head.y));
+      //tail.add(new Segment(head.x,head.y));
     }
   }
 }
@@ -126,13 +127,14 @@ void checkTailCollision() {
 void keyPressed() {
   //Set the direction of the snake according to the arrow keys pressed
   if(key == CODED){
-    if(keyCode == UP){
+    if(keyCode == UP && direction!=DOWN){
     direction = UP;
-    }else if(keyCode == DOWN){
+    
+    }else if(keyCode == DOWN && direction!=UP){
     direction = DOWN;
-    }else if(keyCode == LEFT){
+    }else if(keyCode == LEFT && direction!=RIGHT){
     direction = LEFT;
-    }else if(keyCode == RIGHT){
+    }else if(keyCode == RIGHT && direction!=LEFT){
     direction = RIGHT;
     }
   }
@@ -144,23 +146,33 @@ void move() {
   switch(direction) {
    
   case UP:
-  head.y = head.y-speed;
-  
     // move head up here 
+    for(int i=0;i<tail.size();i++){  
+      tail.get(i).y = tail.get(i).y+8;
+    }
+    head.y = head.y-speed;
     break;
-  case DOWN:
-  head.y = head.y+speed;  
-  
+  case DOWN:  
+  for(int i=0;i<tail.size();i++){  
+      tail.get(i).y = tail.get(i).y-8;
+      
+    }
+   head.y = head.y+speed;
     // move head down here 
     break;
   case LEFT:
-  head.x = head.x-speed;
-
+   for(int i=0;i<tail.size();i++){  
+      tail.get(i).x = tail.get(i).x+8;
+    }
+    head.x = head.x-speed;
    // figure it out 
     break;
   case RIGHT:
-  head.x = head.x+speed;
   
+   for(int i=0;i<tail.size();i++){  
+      tail.get(i).x = tail.get(i).x-8;
+    }
+    head.x = head.x+speed;
     // mystery code goes here 
     break;
   }
@@ -191,8 +203,9 @@ void eat() {
     eaten++;
     dropFood();
     drawFood();
-    
+    for(int i=0;i<5;i++){
     tail.add(new Segment(head.x,head.y));
+    }
     System.out.println(eaten);
     System.out.println(tail.size());
     
